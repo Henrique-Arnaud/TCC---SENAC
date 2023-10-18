@@ -3,7 +3,7 @@ import datetime as dt
 import pickle
 import os
 import numpy as np
-from sklearn.model_selection import train_test_split
+#from sklearn.model_selection import train_test_split
 
 import mediapipe as mp
 from mediapipe.python.solutions.drawing_utils import _normalized_to_pixel_coordinates
@@ -21,8 +21,8 @@ capture = cv2.VideoCapture(0)
 width = capture.get(cv2.CAP_PROP_FRAME_WIDTH)
 height = capture.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
-features = []
-labels = ['aberto', 'fechado']
+#features = []
+#labels = ['aberto', 'fechado']
 
 tempoA = dt.datetime.now()
 
@@ -32,7 +32,7 @@ font                   = cv2.FONT_HERSHEY_SIMPLEX
 bottomLeftCornerOfText = (10,50)
 fontScale              = 1
 fontColor              = (255,0,0)
-thickness              = 1
+thickness              = 2
 lineType               = 2
 
 sonolencia = False
@@ -106,8 +106,8 @@ with mp_face_mesh.FaceMesh(
           
             prediction = model.predict([np.array(left_gray_eye).flatten(), np.array(right_gray_eye).flatten()])
             categories = ['aberto', 'fechado']
-            print('prediction esquerdo: ', categories[prediction[0]])
-            print('prediction direito: ', categories[prediction[1]])
+            #print('prediction esquerdo: ', categories[prediction[0]])
+            #print('prediction direito: ', categories[prediction[1]])
           
             #features.pop()
             #features.pop()
@@ -134,7 +134,28 @@ with mp_face_mesh.FaceMesh(
                 if prediction[0] and prediction[1] == 1:
                     tempoA = dt.datetime.now()
                     predictAnterior = 1
-        print(sonolencia)
+            cv2.putText(frame, 'Esquerdo: ' + categories[prediction[0]],
+                      (10, 360),
+                      font,
+                      1,
+                      fontColor,
+                      thickness,
+                      lineType)
+            cv2.putText(frame, 'Direito: ' + categories[prediction[1]],
+                      (10, 400),
+                      font,
+                      1,
+                      fontColor,
+                      thickness,
+                      lineType)
+            cv2.putText(frame, 'Tempo: ' + str(tempoDecorrido),
+                      (10, 450),
+                      font,
+                      1,
+                      fontColor,
+                      thickness,
+                      lineType)
+        #print(sonolencia)
         if sonolencia == True:
                 cv2.putText(frame,'Sono Detectado!',
                       bottomLeftCornerOfText,
@@ -143,6 +164,8 @@ with mp_face_mesh.FaceMesh(
                       fontColor,
                       thickness,
                       lineType)
+          
+
         cv2.imshow('webCam', frame)
     #if sonolencia == True:
     #  cv2.putText(frame,'Sono Detectado!',
