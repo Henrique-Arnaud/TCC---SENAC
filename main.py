@@ -113,11 +113,11 @@ with mp_face_mesh.FaceMesh(
             #features.pop()
             if predictAnterior == 1: 
               if prediction[0] and prediction[1] == 1:
-                if sonolencia == False:
-                  tempoB = dt.datetime.now()
-                  tempoDecorrido = tempoB - tempoA
-                  if tempoDecorrido.seconds > 1.5:
-                    sonolencia = True
+                #if sonolencia == False:
+                tempoB = dt.datetime.now()
+                tempoDecorrido = tempoB - tempoA
+                if tempoDecorrido.seconds > 1.5:
+                  sonolencia = True
 
               else:
                 predictAnterior = 0
