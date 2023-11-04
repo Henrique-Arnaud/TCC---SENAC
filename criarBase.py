@@ -14,10 +14,10 @@ capture = cv2.VideoCapture(0)
 width = capture.get(cv2.CAP_PROP_FRAME_WIDTH)
 height = capture.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
-pathCinza50 = './baseOficial/600img/cinza/50x50/'
-pathCinza100 = './baseOficial/600img/cinza/100x100/'
-pathColor50 = './baseOficial/600img/colorida/50x50/'
-pathColor100 = './baseOficial/600img/colorida/100x100/'
+pathCinza50 = './baseOficial/600img/cinza/50x50/fechado'
+pathCinza100 = './baseOficial/600img/cinza/100x100/fechado'
+pathColor50 = './baseOficial/600img/colorida/50x50/fechado'
+pathColor100 = './baseOficial/600img/colorida/100x100/fechado'
 
 qtd = 0
 
@@ -96,6 +96,7 @@ with mp_face_mesh.FaceMesh(
         cv2.imshow('esq', left_eye_50)
         cv2.imshow('dir', right_eye_50)
         cv2.imshow('webCam', frame)
+        print(qtd)
     #clicar na tecla 'q' para sair
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
