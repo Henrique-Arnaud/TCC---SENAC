@@ -106,8 +106,8 @@ with mp_face_mesh.FaceMesh(
           
             prediction = model.predict([np.array(left_gray_eye).flatten(), np.array(right_gray_eye).flatten()])
             categories = ['aberto', 'fechado']
-            #print('prediction esquerdo: ', categories[prediction[0]])
-            #print('prediction direito: ', categories[prediction[1]])
+            print('prediction esquerdo: ', categories[prediction[0]])
+            print('prediction direito: ', categories[prediction[1]])
           
             #features.pop()
             #features.pop()
