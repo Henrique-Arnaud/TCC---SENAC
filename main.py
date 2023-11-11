@@ -7,6 +7,7 @@ import numpy as np
 
 import mediapipe as mp
 from mediapipe.python.solutions.drawing_utils import _normalized_to_pixel_coordinates
+import pandas as pd
 
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
@@ -14,7 +15,7 @@ mp_face_mesh = mp.solutions.face_mesh
 
 
 #pick = open('model.sav', 'rb')
-pick = open('baseCompleta/600img/100x100/model.sav', 'rb')
+pick = open('model/modelColorida100x100.sav', 'rb')
 model = pickle.load(pick)
 pick.close()
 capture = cv2.VideoCapture(0)
@@ -103,7 +104,13 @@ with mp_face_mesh.FaceMesh(
             #features.append(np.array(left_gray_eye).flatten())
             #features.append(np.array(left_gray_eye).flatten())
             #xtrain, xtest, ytrain, ytest = train_test_split(features, labels, test_size=0.5)
-          
+            
+            
+            #flat_data_test = np.array([(left_eye).flatten(),(right_eye).flatten()])
+            #df=pd.DataFrame(flat_data_test) 
+            #x=df.iloc[:,:-20000] #input data 
+            #y=df.iloc[:,-1] #output data
+            #prediction = model.predict(x)
             prediction = model.predict([np.array(left_gray_eye).flatten(), np.array(right_gray_eye).flatten()])
             categories = ['aberto', 'fechado']
             print('prediction esquerdo: ', categories[prediction[0]])

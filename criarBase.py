@@ -14,10 +14,10 @@ capture = cv2.VideoCapture(0)
 width = capture.get(cv2.CAP_PROP_FRAME_WIDTH)
 height = capture.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
-pathCinza50 = './baseOficial/600img/cinza/50x50/fechado'
-pathCinza100 = './baseOficial/600img/cinza/100x100/fechado'
-pathColor50 = './baseOficial/600img/colorida/50x50/fechado'
-pathColor100 = './baseOficial/600img/colorida/100x100/fechado'
+#pathCinza50 = './baseOficial/600img/cinza/50x50/teste/fechado/'
+#pathCinza100 = './baseOficial/600img/cinza/100x100/teste/fechado/'
+#pathColor50 = './baseOficial/600img/colorida/50x50/teste/fechado/'
+#pathColor100 = './baseOficial/600img/colorida/100x100/teste/fechado/'
 
 qtd = 0
 
