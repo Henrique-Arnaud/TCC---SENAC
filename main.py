@@ -3,6 +3,8 @@ import datetime as dt
 import pickle
 import os
 import numpy as np
+import time
+from pygame import mixer
 #from sklearn.model_selection import train_test_split
 
 import mediapipe as mp
@@ -15,13 +17,15 @@ mp_face_mesh = mp.solutions.face_mesh
 
 
 #pick = open('model.sav', 'rb')
-pick = open('modeloTesteLeo/model1.sav', 'rb')
+pick = open('modeloTesteLeo/model2.sav', 'rb')
 model = pickle.load(pick)
 pick.close()
 capture = cv2.VideoCapture(0)
 width = capture.get(cv2.CAP_PROP_FRAME_WIDTH)
 height = capture.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
+mixer.init()
+mixer.music.load("./beep.mp3")
 #features = []
 #labels = ['aberto', 'fechado']
 
@@ -90,8 +94,8 @@ with mp_face_mesh.FaceMesh(
                 width, 
                 height)
 
-            left_eye = cv2.resize(frame[left_eye_cord1[1]: left_eye_cord2[1], left_eye_cord2[0]: left_eye_cord1[0]], (50,50))
-            right_eye = cv2.resize(frame[right_eye_cord1[1]: right_eye_cord2[1], right_eye_cord1[0]: right_eye_cord2[0]], (50,50))
+            left_eye = cv2.resize(frame[left_eye_cord1[1]: left_eye_cord2[1], left_eye_cord2[0]: left_eye_cord1[0]], (100,100))
+            right_eye = cv2.resize(frame[right_eye_cord1[1]: right_eye_cord2[1], right_eye_cord1[0]: right_eye_cord2[0]], (100,100))
         
               #eye_cropped = (eye_cropped.reshape(-1, 2))
             left_gray_eye = cv2.cvtColor(left_eye, cv2.COLOR_BGR2GRAY)
@@ -164,7 +168,10 @@ with mp_face_mesh.FaceMesh(
                       lineType)
         #print(sonolencia)
         if sonolencia == True:
-                cv2.putText(frame,'Sono Detectado!',
+          mixer.music.play()
+          while mixer.music.get_busy():  # wait for music to finish playing
+            time.sleep(1)
+            cv2.putText(frame,'Sono Detectado!',
                       bottomLeftCornerOfText,
                       font,
                       fontScale,
