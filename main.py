@@ -15,7 +15,7 @@ mp_face_mesh = mp.solutions.face_mesh
 
 
 #pick = open('model.sav', 'rb')
-pick = open('model/modelColorida100x100.sav', 'rb')
+pick = open('modeloTesteLeo/model1.sav', 'rb')
 model = pickle.load(pick)
 pick.close()
 capture = cv2.VideoCapture(0)
@@ -90,8 +90,8 @@ with mp_face_mesh.FaceMesh(
                 width, 
                 height)
 
-            left_eye = cv2.resize(frame[left_eye_cord1[1]: left_eye_cord2[1], left_eye_cord2[0]: left_eye_cord1[0]], (100,100))
-            right_eye = cv2.resize(frame[right_eye_cord1[1]: right_eye_cord2[1], right_eye_cord1[0]: right_eye_cord2[0]], (100,100))
+            left_eye = cv2.resize(frame[left_eye_cord1[1]: left_eye_cord2[1], left_eye_cord2[0]: left_eye_cord1[0]], (50,50))
+            right_eye = cv2.resize(frame[right_eye_cord1[1]: right_eye_cord2[1], right_eye_cord1[0]: right_eye_cord2[0]], (50,50))
         
               #eye_cropped = (eye_cropped.reshape(-1, 2))
             left_gray_eye = cv2.cvtColor(left_eye, cv2.COLOR_BGR2GRAY)
