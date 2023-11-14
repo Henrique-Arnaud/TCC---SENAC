@@ -15,8 +15,6 @@ mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 mp_face_mesh = mp.solutions.face_mesh
 
-
-#pick = open('model.sav', 'rb')
 pick = open('modeloTesteLeo/model2.sav', 'rb')
 model = pickle.load(pick)
 pick.close()
@@ -26,8 +24,7 @@ height = capture.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
 mixer.init()
 mixer.music.load("./beep.mp3")
-#features = []
-#labels = ['aberto', 'fechado']
+
 
 tempoA = dt.datetime.now()
 
@@ -42,9 +39,10 @@ lineType               = 2
 
 sonolencia = False
 #path utilizado para criar nosso dataset (selecionar uma pasta vazia para depois separar as imagens em aberto ou fechado)
-path = './nossoDataset/'
+#path = './nossoDataset/'
+
 tempoDecorrido = 0
-#capture.set(cv2.CAP_PROP_FPS, 10)
+
 with mp_face_mesh.FaceMesh(
     max_num_faces=1,
     refine_landmarks=True,
@@ -96,38 +94,42 @@ with mp_face_mesh.FaceMesh(
 
             left_eye = cv2.resize(frame[left_eye_cord1[1]: left_eye_cord2[1], left_eye_cord2[0]: left_eye_cord1[0]], (100,100))
             right_eye = cv2.resize(frame[right_eye_cord1[1]: right_eye_cord2[1], right_eye_cord1[0]: right_eye_cord2[0]], (100,100))
-        
-              #eye_cropped = (eye_cropped.reshape(-1, 2))
+
+            
+            #Prediction para colorido
+            
+            #cv2.imwrite('teste/' + 'esquerdo' + '.jpg', left_eye)
+            #cv2.imwrite('teste/' + 'direito' + '.jpg', right_eye)
+            #olhos = []
+            #for img in os.listdir('teste'):
+              #imgPath = os.path.join('teste', img)
+              #eyeImg = cv2.imread(imgPath, 0)
+              #try:
+                #olhos.append(eyeImg.flatten())
+              #except Exception as e:
+                #pass
+
+            #prediction = model.predict(olhos)
+
+
+            #Prediction para cinza
             left_gray_eye = cv2.cvtColor(left_eye, cv2.COLOR_BGR2GRAY)
             left_gray_eye = cv2.equalizeHist(left_gray_eye) 
             right_gray_eye = cv2.cvtColor(right_eye, cv2.COLOR_BGR2GRAY)
             right_gray_eye = cv2.equalizeHist(right_gray_eye) 
-              #cv2.imshow("webcam2", gray_eye)
-            #cv2.imwrite(path + dt.datetime.now().strftime('IMG-%Y-%m-%d-%H%M%S') + '.jpg', gray_eye)
-              #if(tempoDecorrido.seconds >= 3):
-            #features.append(np.array(left_gray_eye).flatten())
-            #features.append(np.array(left_gray_eye).flatten())
-            #xtrain, xtest, ytrain, ytest = train_test_split(features, labels, test_size=0.5)
-            
-            
-            #flat_data_test = np.array([(left_eye).flatten(),(right_eye).flatten()])
-            #df=pd.DataFrame(flat_data_test) 
-            #x=df.iloc[:,:-20000] #input data 
-            #y=df.iloc[:,-1] #output data
-            #prediction = model.predict(x)
-            prediction = model.predict([np.array(left_gray_eye).flatten(), np.array(right_gray_eye).flatten()])
+
+            prediction = model.predict([np.array(left_gray_eye).flatten(),np.array(right_gray_eye).flatten()])
+
             categories = ['aberto', 'fechado']
             print('prediction esquerdo: ', categories[prediction[0]])
             print('prediction direito: ', categories[prediction[1]])
           
-            #features.pop()
-            #features.pop()
             if predictAnterior == 1: 
               if prediction[0] and prediction[1] == 1:
                 #if sonolencia == False:
                 tempoB = dt.datetime.now()
                 tempoDecorrido = tempoB - tempoA
-                if tempoDecorrido.seconds > 1.5:
+                if tempoDecorrido.seconds > 1.0:
                   sonolencia = True
 
               else:
@@ -166,7 +168,7 @@ with mp_face_mesh.FaceMesh(
                       fontColor,
                       thickness,
                       lineType)
-        #print(sonolencia)
+
         if sonolencia == True:
           mixer.music.play()
           while mixer.music.get_busy():  # wait for music to finish playing
@@ -181,15 +183,6 @@ with mp_face_mesh.FaceMesh(
           
 
         cv2.imshow('webCam', frame)
-    #if sonolencia == True:
-    #  cv2.putText(frame,'Sono Detectado!',
-    #                  bottomLeftCornerOfText,
-    #                  font,
-    #                  fontScale,
-    #                  fontColor,
-    #                  thickness,
-    #                  lineType)
-    # if(eye_center):
 
     #clicar na tecla 'q' para sair
         if cv2.waitKey(1) & 0xFF == ord('q'):
