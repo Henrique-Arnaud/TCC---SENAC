@@ -196,6 +196,6 @@ with mp_face_mesh.FaceMesh(
             break
     else:
       break
-
+mixer.quit()
 capture.release()
 cv2.destroyAllWindows()
