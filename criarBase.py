@@ -14,10 +14,11 @@ capture = cv2.VideoCapture(0)
 width = capture.get(cv2.CAP_PROP_FRAME_WIDTH)
 height = capture.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
-#pathCinza50 = './baseOficial/600img/cinza/50x50/teste/fechado/'
-#pathCinza100 = './baseOficial/600img/cinza/100x100/teste/fechado/'
-#pathColor50 = './baseOficial/600img/colorida/50x50/teste/fechado/'
-#pathColor100 = './baseOficial/600img/colorida/100x100/teste/fechado/'
+
+pathCinza50 = 'C:/Users/Gustavo/Desktop/TCC/TCC---SENAC/baseOficial/600img/cinza/50x50/validacao/fechado/'
+pathCinza100 = 'C:/Users/Gustavo/Desktop/TCC/TCC---SENAC/baseOficial/600img/cinza/100x100/validacao/fechado/'
+pathColor50 = 'C:/Users/Gustavo/Desktop/TCC/TCC---SENAC/baseOficial/600img/colorida/50x50/validacao/fechado/'
+pathColor100 = 'C:/Users/Gustavo/Desktop/TCC/TCC---SENAC/baseOficial/600img/colorida/100x100/validacao/fechado/'
 
 qtd = 0
 
@@ -105,3 +106,4 @@ with mp_face_mesh.FaceMesh(
 
 capture.release()
 cv2.destroyAllWindows()
+
