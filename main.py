@@ -1,3 +1,4 @@
+#Importação 
 import cv2
 import datetime as dt
 import pickle
@@ -5,31 +6,29 @@ import os
 import numpy as np
 import time
 from pygame import mixer
-#from sklearn.model_selection import train_test_split
-
 import mediapipe as mp
 from mediapipe.python.solutions.drawing_utils import _normalized_to_pixel_coordinates
-import pandas as pd
 
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 mp_face_mesh = mp.solutions.face_mesh
 
-pick = open('modeloTesteLeo/model2.sav', 'rb')
+#Utilização do Modelo de IA
+pick = open('modelos/model1.sav', 'rb')
 model = pickle.load(pick)
 pick.close()
+
+#Utilização da câmera para capturar o vídeo em tempo real
 capture = cv2.VideoCapture(0)
+
 width = capture.get(cv2.CAP_PROP_FRAME_WIDTH)
 height = capture.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
+#Utilização do som para alertar o estado de sonolência
 mixer.init()
 mixer.music.load("./beep.mp3")
 
-
-tempoA = dt.datetime.now()
-
-predictAnterior = 0
-
+#Parâmetros dos textos inseridos na tela
 font                   = cv2.FONT_HERSHEY_SIMPLEX
 bottomLeftCornerOfText = (10,50)
 fontScale              = 1
@@ -38,16 +37,17 @@ thickness              = 2
 lineType               = 2
 
 sonolencia = False
-#path utilizado para criar nosso dataset (selecionar uma pasta vazia para depois separar as imagens em aberto ou fechado)
-#path = './nossoDataset/'
-
+predictAnterior = 0
+tempoA = dt.datetime.now()
 tempoDecorrido = 0
+categories = ['aberto', 'fechado']
 
 with mp_face_mesh.FaceMesh(
     max_num_faces=1,
     refine_landmarks=True,
     min_detection_confidence=0.5,
     min_tracking_confidence=0.5) as face_mesh:
+  #Loop enquanto a câmera está aberta
   while capture.isOpened():
   
     ret, frame = capture.read()
@@ -92,46 +92,43 @@ with mp_face_mesh.FaceMesh(
                 width, 
                 height)
 
-            left_eye = cv2.resize(frame[left_eye_cord1[1]: left_eye_cord2[1], left_eye_cord2[0]: left_eye_cord1[0]], (100,100))
-            right_eye = cv2.resize(frame[right_eye_cord1[1]: right_eye_cord2[1], right_eye_cord1[0]: right_eye_cord2[0]], (100,100))
+            #Recorte e Redimensionamento do olho esquerdo e do olho direito
+            left_eye = cv2.resize(frame[left_eye_cord1[1]: left_eye_cord2[1], left_eye_cord2[0]: left_eye_cord1[0]], (50,50))
+            right_eye = cv2.resize(frame[right_eye_cord1[1]: right_eye_cord2[1], right_eye_cord1[0]: right_eye_cord2[0]], (50,50))
 
             
-            #Prediction para colorido
-            
-            #cv2.imwrite('teste/' + 'esquerdo' + '.jpg', left_eye)
-            #cv2.imwrite('teste/' + 'direito' + '.jpg', right_eye)
+            #Prediction para Modelos Coloridos
+            #cv2.imwrite('olhos/' + 'esquerdo' + '.jpg', left_eye)
+            #cv2.imwrite('olhos/' + 'direito' + '.jpg', right_eye)
             #olhos = []
-            #for img in os.listdir('teste'):
-              #imgPath = os.path.join('teste', img)
+            #for img in os.listdir('olhos'):
+              #imgPath = os.path.join('olhos', img)
               #eyeImg = cv2.imread(imgPath, 0)
               #try:
                 #olhos.append(eyeImg.flatten())
               #except Exception as e:
                 #pass
-
             #prediction = model.predict(olhos)
 
 
-            #Prediction para cinza
+            #Prediction para Modelos Cinzas
             left_gray_eye = cv2.cvtColor(left_eye, cv2.COLOR_BGR2GRAY)
             left_gray_eye = cv2.equalizeHist(left_gray_eye) 
             right_gray_eye = cv2.cvtColor(right_eye, cv2.COLOR_BGR2GRAY)
             right_gray_eye = cv2.equalizeHist(right_gray_eye) 
-
             prediction = model.predict([np.array(left_gray_eye).flatten(),np.array(right_gray_eye).flatten()])
 
-            categories = ['aberto', 'fechado']
-            print('prediction esquerdo: ', categories[prediction[0]])
-            print('prediction direito: ', categories[prediction[1]])
-          
+            #Verifica se a última classificação foi dois olhos fechados
             if predictAnterior == 1: 
-              if prediction[0] and prediction[1] == 1:
-                #if sonolencia == False:
+              #Verifica se as duas predições atuais foram olhos fechados
+              if prediction[0] == 1 and prediction[1] == 1:
                 tempoB = dt.datetime.now()
                 tempoDecorrido = tempoB - tempoA
-                if tempoDecorrido.seconds > 1.0:
+                #Verifica se o tempo com os dois olhos fechados é maior que 1.5 segundos
+                if tempoDecorrido.seconds > 1.5:
                   sonolencia = True
 
+              #Caso as duas predições atuais não foram olhos fechados
               else:
                 predictAnterior = 0
                 if sonolencia == True:
@@ -143,10 +140,14 @@ with mp_face_mesh.FaceMesh(
                           fontColor,
                           thickness,
                           lineType)
+                  
+            #Caso a última classificação não foi dois olhos fechados
             else:
-                if prediction[0] and prediction[1] == 1:
+                if prediction[0] == 1 and prediction[1] == 1:
                     tempoA = dt.datetime.now()
                     predictAnterior = 1
+            
+            #Textos inseridos na tela
             cv2.putText(frame, 'Esquerdo: ' + categories[prediction[0]],
                       (10, 360),
                       font,
@@ -168,7 +169,8 @@ with mp_face_mesh.FaceMesh(
                       fontColor,
                       thickness,
                       lineType)
-
+            
+        #Verifica se foi detectada a sonolência
         if sonolencia == True:
           mixer.music.play()
           while mixer.music.get_busy():  # wait for music to finish playing
